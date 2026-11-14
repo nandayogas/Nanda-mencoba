@@ -1,0 +1,12 @@
+{
+  "name": "3-garage",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Website 3 GARAGE - SUBARU & MAZDA SPECIALIST",
+  "scripts": {
+    "config": "node scripts/set-config.mjs",
+    "check": "node scripts/check.mjs",
+    "deploy": "node scripts/deploy.mjs"
+  }
+}
