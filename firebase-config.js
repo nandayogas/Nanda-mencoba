@@ -88,9 +88,9 @@ export const STATUSES = ["Menunggu", "Dikonfirmasi", "Selesai", "Dibatalkan"];
 // publicKey dan urlEndpoint boleh di frontend. JANGAN taruh private key di sini.
 // uploadAuthUrl = alamat Cloudflare Worker (lihat worker/worker.js).
 export const IMAGEKIT = {
-  publicKey: "ISI_PUBLIC_KEY_IMAGEKIT",
+  publicKey: "public_fL+nQUxID3yIx3smreY17kvwhaM=",
   urlEndpoint: "https://ik.imagekit.io/ISI_ID_ANDA",
-  uploadAuthUrl: "https://ISI_NAMA_WORKER.ISI_SUBDOMAIN.workers.dev",
+  uploadAuthUrl: "nandamencoba.nandayoga711.workers.dev",
   folder: "/3garage/videos"
 };
 
