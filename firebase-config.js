@@ -11,7 +11,6 @@ export const firebaseConfig =  {
 ‎  storageBucket: "nandamencoba.firebasestorage.app",
 ‎  messagingSenderId: "629546753601",
 ‎  appId: "1:629546753601:web:8f01d6ece1138b6cd1f0c0",
-‎  measurementId: "G-1FB6G2JRVR"
 ‎};
 
 // Nilai awal. Dipakai jika dokumen site/config belum pernah disimpan dari admin.
