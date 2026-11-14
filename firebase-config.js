@@ -95,7 +95,7 @@ export const IMAGEKIT = {
 };
 
 // Batas ukuran video dari galeri (MB). Sesuaikan dengan paket ImageKit Anda.
-export const VIDEO_MAX_MB = 50;
+export const VIDEO_MAX_MB = 200;
 
 // ---------- Helper bersama ----------
 
