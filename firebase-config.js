@@ -4,13 +4,38 @@
 // GANTI nilai di bawah dengan konfigurasi dari:
 // Firebase Console > Project settings > Your apps > Web app > SDK setup and configuration
 
-export const firebaseConfig = {
-  apiKey: "GANTI_API_KEY",
-  authDomain: "GANTI_PROJECT_ID.firebaseapp.com",
-  projectId: "GANTI_PROJECT_ID",
-  storageBucket: "GANTI_PROJECT_ID.appspot.com",
-  messagingSenderId: "GANTI_SENDER_ID",
-  appId: "GANTI_APP_ID"
+export 
+App nickname
+3 GARAGE
+App ID 
+1:629546753601:web:8f01d6ece1138b6cd1f0c0
+SDK setup and configuration
+
+npm
+
+CDN
+
+Config
+If you're already using npm and a module bundler such as webpack or Rollup, you can run the following command to install the latest SDK (Learn more):
+
+npm install firebase
+Then, initialize Firebase and begin using the SDKs for the products you'd like to use.
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBD6rrP-XxDYYOIBGIFRWKLrbhY3YSVDhU",
+  authDomain: "nandamencoba.firebaseapp.com",
+  projectId: "nandamencoba",
+  storageBucket: "nandamencoba.firebasestorage.app",
+  messagingSenderId: "629546753601",
+  appId: "1:629546753601:web:8f01d6ece1138b6cd1f0c0"
 };
 
 // Nilai awal. Dipakai jika dokumen site/config belum pernah disimpan dari admin.
