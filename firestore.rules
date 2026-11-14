@@ -1,0 +1,90 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- Helper ----------
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Admin = UID yang memiliki dokumen di koleksi admins/{uid}.
+    // Dokumen ini dibuat MANUAL lewat Firebase Console (tidak ada pendaftaran publik).
+    function isAdmin() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function isStr(v, min, max) {
+      return v is string && v.size() >= min && v.size() <= max;
+    }
+
+    // ---------- Daftar admin ----------
+    // Pengguna hanya bisa membaca dokumen miliknya sendiri. Tidak bisa diubah dari klien.
+    match /admins/{uid} {
+      allow read: if isSignedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // ---------- Konfigurasi website (publik dibaca, hanya admin menulis) ----------
+    match /site/{docId} {
+      allow read: if true;
+      allow create, update: if isAdmin()
+        && request.resource.data.keys().size() <= 80
+        && (!('maintenance' in request.resource.data) || request.resource.data.maintenance is bool);
+      allow delete: if isAdmin();
+    }
+
+    // ---------- Statistik kunjungan anonim (hanya penambahan +1) ----------
+    match /stats/{docId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['count'])
+        && request.resource.data.count == 1;
+      allow update: if request.resource.data.keys().hasOnly(['count'])
+        && request.resource.data.count == resource.data.count + 1;
+      allow delete: if isAdmin();
+    }
+
+    // ---------- Produk ----------
+    // Pengunjung hanya bisa membaca produk yang aktif. Admin bisa membaca semua.
+    match /products/{productId} {
+      allow read: if (resource.data.active == true) || isAdmin();
+      allow create, update: if isAdmin()
+        && isStr(request.resource.data.name, 2, 120)
+        && request.resource.data.price is number && request.resource.data.price >= 0
+        && request.resource.data.stock is number && request.resource.data.stock >= 0
+        && request.resource.data.active is bool
+        && (!('order' in request.resource.data) || request.resource.data.order is number)
+        && (!('description' in request.resource.data) || isStr(request.resource.data.description, 0, 800))
+        && (!('imageUrl' in request.resource.data) || isStr(request.resource.data.imageUrl, 0, 2048));
+      allow delete: if isAdmin();
+    }
+
+    // ---------- Booking servis ----------
+    // Pengunjung boleh mengirim booking, tetapi tidak boleh membaca booking orang lain.
+    match /bookings/{bookingId} {
+      allow read, delete: if isAdmin();
+
+      allow create: if request.resource.data.keys().hasOnly(
+          ['name', 'phone', 'vehicleType', 'serviceType', 'date', 'complaint', 'status', 'createdAt'])
+        && isStr(request.resource.data.name, 2, 80)
+        && isStr(request.resource.data.phone, 9, 20)
+        && isStr(request.resource.data.vehicleType, 2, 60)
+        && isStr(request.resource.data.serviceType, 2, 60)
+        && isStr(request.resource.data.date, 10, 10)
+        && request.resource.data.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && isStr(request.resource.data.complaint, 0, 500)
+        && request.resource.data.status == 'Menunggu'
+        && request.resource.data.createdAt == request.time;
+
+      // Admin hanya boleh mengubah status, dan hanya ke nilai yang diizinkan.
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && request.resource.data.status in ['Menunggu', 'Dikonfirmasi', 'Selesai', 'Dibatalkan'];
+    }
+
+    // ---------- Default: tolak semua yang tidak diatur di atas ----------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
