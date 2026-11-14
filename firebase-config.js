@@ -5,12 +5,12 @@
 // Firebase Console > Project settings > Your apps > Web app > SDK setup and configuration
 
 export const firebaseConfig = {
-  apiKey: "GANTI_API_KEY",
-  authDomain: "GANTI_PROJECT_ID.firebaseapp.com",
-  projectId: "GANTI_PROJECT_ID",
-  storageBucket: "GANTI_PROJECT_ID.appspot.com",
-  messagingSenderId: "GANTI_SENDER_ID",
-  appId: "GANTI_APP_ID"
+‎  apiKey: "AIzaSyBD6rrP-XxDYYOIBGIFRWKLrbhY3YSVDhU",
+‎  authDomain: "nandamencoba.firebaseapp.com",
+‎  projectId: "nandamencoba",
+‎  storageBucket: "nandamencoba.firebasestorage.app",
+‎  messagingSenderId: "629546753601",
+‎  appId: "1:629546753601:web:8f01d6ece1138b6cd1f0c0"
 };
 
 // Nilai awal. Dipakai jika dokumen site/config belum pernah disimpan dari admin.
