@@ -4,14 +4,15 @@
 // GANTI nilai di bawah dengan konfigurasi dari:
 // Firebase Console > Project settings > Your apps > Web app > SDK setup and configuration
 
-export const firebaseConfig = {
-‎  apiKey: "AIzaSyBD6rrP-XxDYYOIBGIFRWKLrbhY3YSVDhU",
-‎  authDomain: "nandamencoba.firebaseapp.com",
-‎  projectId: "nandamencoba",
-‎  storageBucket: "nandamencoba.firebasestorage.app",
-‎  messagingSenderId: "629546753601",
-‎  appId: "1:629546753601:web:8f01d6ece1138b6cd1f0c0"
-};
+export const firebaseConfig =  {
+‎  apiKey: "AIzaSyBD6rrP-XxDYYOIBGIFRWKLrbhY3YSVDhU",
+‎  authDomain: "nandamencoba.firebaseapp.com",
+‎  projectId: "nandamencoba",
+‎  storageBucket: "nandamencoba.firebasestorage.app",
+‎  messagingSenderId: "629546753601",
+‎  appId: "1:629546753601:web:8f01d6ece1138b6cd1f0c0",
+‎  measurementId: "G-1FB6G2JRVR"
+‎};
 
 // Nilai awal. Dipakai jika dokumen site/config belum pernah disimpan dari admin.
 export const DEFAULT_SITE = {
