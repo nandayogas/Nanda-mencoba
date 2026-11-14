@@ -89,8 +89,8 @@ export const STATUSES = ["Menunggu", "Dikonfirmasi", "Selesai", "Dibatalkan"];
 // uploadAuthUrl = alamat Cloudflare Worker (lihat worker/worker.js).
 export const IMAGEKIT = {
   publicKey: "public_fL+nQUxID3yIx3smreY17kvwhaM=",
-  urlEndpoint: "https://ik.imagekit.io/ISI_ID_ANDA",
-  uploadAuthUrl: "nandamencoba.nandayoga711.workers.dev",
+  urlEndpoint: "https://ik.imagekit.io/3garage",
+  uploadAuthUrl: "https://nandamencoba.nandayoga711.workers.dev",
   folder: "/3garage/videos"
 };
 
