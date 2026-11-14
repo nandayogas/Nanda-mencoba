@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnosa 3 GARAGE</title>
+</head>
+<body style="background:#000;color:#fff;font-family:monospace;padding:16px;font-size:14px;line-height:1.5">
+<h3>Diagnosa 3 GARAGE</h3>
+<pre id="out"></pre>
+<script type="module">
+const out = document.getElementById("out");
+const log = (m) => { out.textContent += m + "\n"; };
+
+window.addEventListener("error", (e) => log("ERROR: " + e.message));
+window.addEventListener("unhandledrejection", (e) => log("PROMISE ERROR: " + (e.reason?.message || e.reason)));
+
+log("Memulai...");
+try {
+  log("1. Membaca firebase-config.js...");
+  const { firebaseConfig } = await import("./firebase-config.js");
+  log("   OK. apiKey: " + (firebaseConfig.apiKey ? firebaseConfig.apiKey.slice(0, 6) + "..." : "KOSONG"));
+
+  log("2. Memuat Firebase App...");
+  const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
+  const app = initializeApp(firebaseConfig);
+  log("   OK");
+
+  log("3. Memuat Firestore...");
+  const { getFirestore, doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+  const db = getFirestore(app);
+  log("   OK");
+
+  log("4. Membaca site/config...");
+  const snap = await getDoc(doc(db, "site", "config"));
+  log("   OK. Dokumen ada: " + snap.exists());
+
+  log("SELESAI. Tidak ada error.");
+} catch (err) {
+  log("GAGAL: " + (err.code || "") + " " + err.message);
+}
+</script>
+</body>
+</html>
