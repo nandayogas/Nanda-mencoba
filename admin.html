@@ -1,0 +1,913 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin - 3 GARAGE</title>
+<style>
+:root{--accent:#e10600;--bg:#070709;--panel:#111114;--line:rgba(255,255,255,.09);--text:#f5f5f7;--muted:#a1a1aa}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;min-height:100vh;font-size:14px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+.icon{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ---------- Login ---------- */
+#login{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 20% 10%,rgba(225,6,0,.18),transparent 45%),var(--bg)}
+.lbox{width:min(400px,100%);background:rgba(20,20,24,.7);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:18px;padding:30px}
+.lbox h1{font-size:26px;font-weight:900;font-style:italic;margin-bottom:4px}
+.lbox h1 span{color:var(--accent)}
+.lbox p{color:var(--muted);margin-bottom:20px;font-size:13px}
+.lbox label{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:12px}
+.in{display:block;width:100%;margin-top:6px;background:#0b0b0e;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 12px;font-size:14px}
+.in:focus{outline:none;border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#fff;border:0;border-radius:10px;padding:11px 16px;font-weight:700}
+.btn:hover{filter:brightness(1.1)}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.2);color:#e4e4e7}
+.btn.ghost:hover{background:rgba(255,255,255,.06)}
+.btn.sm{padding:6px 10px;font-size:12px;border-radius:8px}
+.btn.danger{background:transparent;border:1px solid rgba(225,6,0,.5);color:#fca5a5}
+.btn.block{width:100%}
+.err{color:#fca5a5;font-size:13px;margin-top:10px;min-height:18px}
+
+/* ---------- Layout ---------- */
+#app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+aside{background:#0b0b0e;border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
+.brand{font-weight:900;font-style:italic;font-size:20px;padding:4px 10px 18px}
+.brand span{color:var(--accent)}
+.tab{display:flex;align-items:center;gap:10px;background:none;border:0;color:#d4d4d8;padding:11px 12px;border-radius:10px;text-align:left;font-weight:600}
+.tab:hover{background:rgba(255,255,255,.05)}
+.tab.on{background:rgba(225,6,0,.15);color:#fff;box-shadow:inset 3px 0 0 var(--accent)}
+.side-foot{margin-top:auto}
+main{padding:26px;min-width:0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.top h2{font-size:22px;font-weight:900}
+.top .who{color:var(--muted);font-size:12px;word-break:break-all}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:18px}
+.stat b{display:block;font-size:30px;font-weight:900;color:#fff}
+.stat span{color:var(--muted);font-size:12px;font-weight:600}
+.stat.red b{color:var(--accent)}
+.row-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.row-bar .in{margin:0;width:auto;min-width:160px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:720px}
+th,td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-size:12px;font-weight:700;background:#0c0c0f;white-space:nowrap}
+td small{color:var(--muted)}
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700;background:rgba(255,255,255,.08)}
+.badge.Menunggu{background:rgba(234,179,8,.18);color:#fde68a}
+.badge.Dikonfirmasi{background:rgba(59,130,246,.2);color:#bfdbfe}
+.badge.Selesai{background:rgba(34,197,94,.18);color:#bbf7d0}
+.badge.Dibatalkan{background:rgba(225,6,0,.2);color:#fecaca}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.pill{font-size:12px;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.08)}
+.pill.off{background:rgba(225,6,0,.2);color:#fecaca}
+.empty{color:var(--muted);padding:24px;text-align:center}
+
+/* ---------- Pengaturan website ---------- */
+.group{margin-bottom:18px}
+.group h3{font-size:15px;font-weight:800;margin-bottom:12px;color:#fff;display:flex;gap:8px;align-items:center}
+.group h3::before{content:"";width:4px;height:16px;background:var(--accent);border-radius:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+.grid2 .full{grid-column:1/-1}
+.field label{display:block;font-size:12px;color:var(--muted);font-weight:600}
+.field .in,.field textarea.in{resize:vertical}
+.field textarea.in{min-height:84px}
+.field .hint{font-size:11px;color:#71717a;margin-top:4px}
+.chk{display:flex;align-items:center;gap:8px;color:#e4e4e7;font-size:13px;padding:8px 0}
+.chk input{width:18px;height:18px;accent-color:var(--accent)}
+.savebar{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:18px 0 6px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.savebar .note{color:var(--muted);font-size:12px}
+
+/* ---------- Modal ---------- */
+dialog{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:18px;padding:0;width:min(560px,calc(100% - 24px))}
+dialog::backdrop{background:rgba(0,0,0,.7)}
+.dlg{padding:22px}
+.dlg h3{font-size:18px;font-weight:900;margin-bottom:14px}
+.dlg .grid2{margin-bottom:12px}
+.dlg .acts{justify-content:flex-end;margin-top:6px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#fff;color:#111;padding:10px 16px;border-radius:10px;font-weight:600;opacity:0;transition:.3s;pointer-events:none;z-index:99}
+.toast.show{opacity:1}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- Responsif (HP) ---------- */
+.menu-btn{display:none;background:none;border:1px solid var(--line);border-radius:10px;padding:8px;color:#fff}
+@media(max-width:820px){
+  #app{grid-template-columns:1fr}
+  aside{position:fixed;inset:0 auto 0 0;width:250px;transform:translateX(-105%);transition:.25s;z-index:40;height:100vh}
+  aside.open{transform:none}
+  .menu-btn{display:inline-flex;align-items:center}
+  main{padding:16px}
+  .grid2{grid-template-columns:1fr}
+  .top h2{font-size:19px}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Login ===== -->
+<div id="login" hidden>
+  <form class="lbox" id="loginForm">
+    <h1>3 <span>GARAGE</span></h1>
+    <p>Dashboard admin. Masuk dengan akun yang terdaftar.</p>
+    <label>Email
+      <input class="in" type="email" name="email" required autocomplete="username">
+    </label>
+    <label>Password
+      <input class="in" type="password" name="password" required autocomplete="current-password">
+    </label>
+    <button class="btn block" type="submit" id="loginBtn">Masuk</button>
+    <div class="err" id="loginErr"></div>
+  </form>
+</div>
+
+<!-- ===== Aplikasi ===== -->
+<div id="app" hidden>
+  <aside id="side">
+    <div class="brand"><span>3</span> GARAGE</div>
+    <button class="tab on" data-tab="dashboard"></button>
+    <button class="tab" data-tab="produk"></button>
+    <button class="tab" data-tab="videos"></button>
+    <button class="tab" data-tab="booking"></button>
+    <button class="tab" data-tab="website"></button>
+    <div class="side-foot">
+      <a class="tab" href="index.html" target="_blank" rel="noopener"></a>
+      <button class="tab" id="logoutBtn"></button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="top">
+      <div style="display:flex;gap:10px;align-items:center">
+        <button class="menu-btn" id="menuBtn" aria-label="Menu"></button>
+        <h2 id="pageTitle">Dashboard</h2>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <div class="who" id="who"></div>
+        <button class="btn ghost sm" id="topLogout" type="button"></button>
+      </div>
+    </div>
+
+    <!-- Dashboard -->
+    <section data-panel="dashboard">
+      <div class="stats">
+        <div class="card stat"><b id="stProduk">0</b><span>Produk aktif</span></div>
+        <div class="card stat red"><b id="stMenunggu">0</b><span>Booking menunggu</span></div>
+        <div class="card stat"><b id="stBooking">0</b><span>Total booking</span></div>
+        <div class="card stat"><b id="stVisit">0</b><span>Total kunjungan</span></div>
+      </div>
+      <div class="card">
+        <p style="color:var(--muted);line-height:1.6">
+          Gunakan menu di kiri untuk mengelola <b style="color:#fff">produk sparepart</b>,
+          <b style="color:#fff">booking servis</b>, dan <b style="color:#fff">isi website</b>.
+          Perubahan langsung tampil di halaman publik.
+        </p>
+      </div>
+    </section>
+
+    <!-- Produk -->
+    <section data-panel="produk" hidden>
+      <div class="row-bar">
+        <button class="btn" id="addProductBtn">+ Tambah Produk</button>
+        <span class="pill" id="prodCount"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Urutan</th><th>Nama</th><th>Harga</th><th>Stok</th><th>Status</th><th>Aksi</th></tr></thead>
+          <tbody id="prodBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Video Bengkel -->
+    <section data-panel="videos" hidden>
+      <div class="row-bar">
+        <button class="btn" id="addVideoBtn">+ Tambah Video</button>
+        <span class="pill" id="vidCount"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Urutan</th><th>Judul</th><th>Sumber</th><th>Alamat</th><th>Status</th><th>Aksi</th></tr></thead>
+          <tbody id="vidBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Booking -->
+    <section data-panel="booking" hidden>
+      <div class="row-bar">
+        <select class="in" id="bookFilter">
+          <option value="">Semua status</option>
+          <option>Menunggu</option><option>Dikonfirmasi</option><option>Selesai</option><option>Dibatalkan</option>
+        </select>
+        <span class="pill" id="bookCount"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tanggal</th><th>Pelanggan</th><th>Mobil & Servis</th><th>Keluhan</th><th>Status</th><th>Aksi</th></tr></thead>
+          <tbody id="bookBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Website -->
+    <section data-panel="website" hidden>
+      <form id="siteForm"></form>
+    </section>
+  </main>
+</div>
+
+<dialog id="prodDlg">
+  <form method="dialog" class="dlg" id="prodForm">
+    <h3 id="prodTitle">Tambah Produk</h3>
+    <div class="grid2">
+      <div class="field full"><label>Nama produk<input class="in" name="name" required maxlength="120"></label></div>
+      <div class="field"><label>Harga (Rp)<input class="in" name="price" type="number" min="0" required></label></div>
+      <div class="field"><label>Stok<input class="in" name="stock" type="number" min="0" required></label></div>
+      <div class="field full"><label>Deskripsi<textarea class="in" name="description" maxlength="800"></textarea></label></div>
+      <div class="field full"><label>URL gambar (https://...)<input class="in" name="imageUrl" maxlength="2048" placeholder="Opsional"></label></div>
+      <div class="field"><label>Urutan<input class="in" name="order" type="number" min="0" required></label></div>
+      <div class="field" style="display:flex;align-items:end"><label class="chk" style="width:100%"><input type="checkbox" name="active" checked> Tampilkan di website</label></div>
+    </div>
+    <div class="acts">
+      <button class="btn ghost sm" type="button" id="prodCancel">Batal</button>
+      <button class="btn sm" type="submit" id="prodSave">Simpan</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="vidDlg">
+  <form method="dialog" class="dlg" id="vidForm">
+    <h3 id="vidTitle">Tambah Video</h3>
+    <div class="grid2">
+      <div class="field full"><label>Judul video<input class="in" name="vtitle" required maxlength="120"></label></div>
+      <div class="field full"><label>Deskripsi<textarea class="in" name="vdesc" maxlength="300"></textarea></label></div>
+      <div class="field"><label>Sumber<select class="in" name="vtype"><option value="youtube">Link YouTube</option><option value="file">Video dari galeri</option></select></label></div>
+      <div class="field"><label>Urutan<input class="in" name="vorder" type="number" min="0" required></label></div>
+      <div class="field full" id="vidYt"><label>URL YouTube<input class="in" name="vyt" maxlength="300" placeholder="https://youtu.be/..."></label></div>
+      <div class="field full" id="vidFile" hidden>
+        <label>Pilih video dari galeri (maks <span id="vidMax"></span> MB)<input class="in" name="vfile" type="file" accept="video/*"></label>
+        <label style="margin-top:10px">atau tempel URL video (misalnya dari ImageKit)<input class="in" name="vurl" maxlength="2048" placeholder="https://ik.imagekit.io/..."></label>
+        <div class="hint" id="vidCurrent"></div>
+      </div>
+      <input type="hidden" name="vfileUrl">
+      <div class="field full"><label class="chk"><input type="checkbox" name="vactive" checked> Tampilkan di website</label></div>
+    </div>
+    <div class="hint" id="vidStatus" style="margin-bottom:8px"></div>
+    <div class="acts">
+      <button class="btn ghost sm" type="button" id="vidCancel">Batal</button>
+      <button class="btn sm" type="submit" id="vidSave">Simpan</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, doc, getDoc, getDocs, collection, query, where, orderBy, onSnapshot,
+  addDoc, updateDoc, setDoc, deleteDoc, writeBatch, getCountFromServer, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+  getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  firebaseConfig, DEFAULT_SITE, STATUSES, esc, rupiah, waLink, normalizePhone,
+  mergeSite, getPath, setPath, icon, ytId, IMAGEKIT, VIDEO_MAX_MB
+} from "./firebase-config.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const $ = (id) => document.getElementById(id);
+const SITE_REF = doc(db, "site", "config");
+
+let site = mergeSite({});
+let products = [];
+let bookings = [];
+let started = false;
+const unsubs = [];
+
+/* ---------- Util ---------- */
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove("show"), 2200);
+}
+const errText = (e) => (e?.code === "permission-denied" ? "Akses ditolak. Pastikan akun ini terdaftar sebagai admin." : (e?.message || "Terjadi kesalahan."));
+
+/* ---------- Ikon sidebar ---------- */
+const TABS = [
+  ["dashboard", "Dashboard", "dashboard"],
+  ["produk", "Produk", "box"],
+  ["videos", "Video Bengkel", "play"],
+  ["booking", "Booking", "calendar"],
+  ["website", "Website", "gear"]
+];
+document.querySelectorAll(".tab[data-tab]").forEach((b) => {
+  const t = TABS.find((x) => x[0] === b.dataset.tab);
+  b.innerHTML = `${icon(t[2])} ${t[1]}`;
+});
+$("logoutBtn").innerHTML = `${icon("logout")} Keluar`;
+document.querySelector('a.tab[href="index.html"]').innerHTML = `${icon("arrowRight")} Lihat Website`;
+$("menuBtn").innerHTML = icon("menu");
+
+/* ---------- Navigasi tab ---------- */
+function showTab(name) {
+  document.querySelectorAll(".tab[data-tab]").forEach((b) => b.classList.toggle("on", b.dataset.tab === name));
+  document.querySelectorAll("[data-panel]").forEach((p) => (p.hidden = p.dataset.panel !== name));
+  $("pageTitle").textContent = TABS.find((t) => t[0] === name)[1];
+  $("side").classList.remove("open");
+}
+document.querySelectorAll(".tab[data-tab]").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
+$("menuBtn").addEventListener("click", () => $("side").classList.toggle("open"));
+
+/* ---------- Login / guard admin ---------- */
+$("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const f = e.target;
+  $("loginBtn").disabled = true;
+  $("loginErr").textContent = "";
+  try {
+    await signInWithEmailAndPassword(auth, f.email.value.trim(), f.password.value);
+  } catch (err) {
+    const map = {
+      "auth/invalid-credential": "Email atau password salah.",
+      "auth/invalid-email": "Format email tidak valid.",
+      "auth/too-many-requests": "Terlalu banyak percobaan. Coba lagi nanti.",
+      "auth/api-key-not-valid": "API key Firebase tidak valid. Periksa firebase-config.js.",
+      "auth/unauthorized-domain": "Domain belum diizinkan. Tambahkan di Firebase Auth > Settings > Authorized domains."
+    };
+    $("loginErr").textContent = map[err.code] || ("Login gagal: " + (err.code || err.message));
+  } finally {
+    $("loginBtn").disabled = false;
+  }
+});
+
+$("topLogout").innerHTML = `${icon("logout")} Keluar`;
+
+async function doLogout() {
+  try {
+    $("side").classList.remove("open");
+    stopListeners();
+    await signOut(auth);
+    // Pindah ke layar login langsung, tanpa menunggu listener
+    $("app").hidden = true;
+    $("login").hidden = false;
+    $("loginErr").textContent = "";
+    toast("Anda sudah keluar");
+  } catch (err) {
+    toast("Gagal keluar: " + (err.message || err.code));
+  }
+}
+$("logoutBtn").addEventListener("click", doLogout);
+$("topLogout").addEventListener("click", doLogout);
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    stopListeners();
+    $("app").hidden = true;
+    $("login").hidden = false;
+    return;
+  }
+  let isAdmin = false;
+  try {
+    isAdmin = (await getDoc(doc(db, "admins", user.uid))).exists();
+  } catch (e) {
+    console.error(e);
+  }
+  if (!isAdmin) {
+    $("loginErr").textContent = "Akun ini belum terdaftar sebagai admin.";
+    await signOut(auth);
+    return;
+  }
+  $("who").textContent = user.email;
+  $("login").hidden = true;
+  $("app").hidden = false;
+  if (!started) startListeners();
+});
+
+/* ---------- Listener realtime ---------- */
+function startListeners() {
+  started = true;
+
+  unsubs.push(onSnapshot(SITE_REF, (snap) => {
+    site = mergeSite(snap.exists() ? snap.data() : {});
+    renderSiteForm();
+  }, (e) => toast(errText(e))));
+
+  unsubs.push(onSnapshot(collection(db, "products"), (snap) => {
+    products = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    renderProducts();
+    $("stProduk").textContent = products.filter((p) => p.active).length;
+  }, (e) => toast(errText(e))));
+
+  unsubs.push(onSnapshot(query(collection(db, "bookings"), orderBy("createdAt", "desc")), (snap) => {
+    bookings = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    renderBookings();
+    $("stBooking").textContent = bookings.length;
+    $("stMenunggu").textContent = bookings.filter((b) => b.status === "Menunggu").length;
+  }, (e) => toast(errText(e))));
+
+  unsubs.push(onSnapshot(collection(db, "videos"), (snap) => {
+    videos = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    renderVideos();
+  }, (e) => toast(errText(e))));
+
+  unsubs.push(onSnapshot(doc(db, "stats", "visits"), (snap) => {
+    $("stVisit").textContent = snap.exists() ? snap.data().count || 0 : 0;
+  }));
+}
+function stopListeners() {
+  while (unsubs.length) unsubs.pop()();
+  started = false;
+}
+
+/* ===== PRODUK ===== */
+function renderProducts() {
+  $("prodCount").textContent = products.length + " produk";
+  if (!products.length) {
+    $("prodBody").innerHTML = `<tr><td colspan="6" class="empty">Belum ada produk. Klik "Tambah Produk".</td></tr>`;
+    return;
+  }
+  $("prodBody").innerHTML = products.map((p, i) => `
+    <tr>
+      <td>
+        <div class="acts">
+          <button class="btn ghost sm" data-up="${i}" ${i === 0 ? "disabled" : ""}>↑</button>
+          <button class="btn ghost sm" data-down="${i}" ${i === products.length - 1 ? "disabled" : ""}>↓</button>
+        </div>
+      </td>
+      <td><b>${esc(p.name)}</b><br><small>${esc((p.description || "").slice(0, 80))}</small></td>
+      <td>${rupiah(p.price)}</td>
+      <td>${esc(p.stock)}</td>
+      <td>${p.active ? `<span class="pill">Aktif</span>` : `<span class="pill off">Nonaktif</span>`}</td>
+      <td>
+        <div class="acts">
+          <button class="btn ghost sm" data-edit="${esc(p.id)}">${icon("edit")} Edit</button>
+          <button class="btn danger sm" data-del="${esc(p.id)}">${icon("trash")} Hapus</button>
+        </div>
+      </td>
+    </tr>`).join("");
+}
+
+$("prodBody").addEventListener("click", async (e) => {
+  const b = e.target.closest("button");
+  if (!b || b.disabled) return;
+  if (b.dataset.edit) return openProduct(products.find((p) => p.id === b.dataset.edit));
+  if (b.dataset.del) {
+    const p = products.find((x) => x.id === b.dataset.del);
+    if (!confirm(`Hapus produk "${p.name}"?`)) return;
+    try { await deleteDoc(doc(db, "products", p.id)); toast("Produk dihapus"); }
+    catch (err) { toast(errText(err)); }
+    return;
+  }
+  const up = b.dataset.up !== undefined, idx = Number(b.dataset.up ?? b.dataset.down);
+  if (up || b.dataset.down !== undefined) {
+    const j = up ? idx - 1 : idx + 1;
+    const a = products[idx], c = products[j];
+    if (!a || !c) return;
+    // Tukar nilai order kedua produk
+    const batch = writeBatch(db);
+    batch.update(doc(db, "products", a.id), { order: c.order ?? j });
+    batch.update(doc(db, "products", c.id), { order: a.order ?? idx });
+    try { await batch.commit(); }
+    catch (err) { toast(errText(err)); }
+  }
+});
+
+function openProduct(p = null) {
+  const f = $("prodForm");
+  f.reset();
+  $("prodTitle").textContent = p ? "Edit Produk" : "Tambah Produk";
+  f.dataset.id = p ? p.id : "";
+  f.elements.name.value = p?.name || "";
+  f.price.value = p?.price ?? "";
+  f.stock.value = p?.stock ?? "";
+  f.description.value = p?.description || "";
+  f.imageUrl.value = p?.imageUrl || "";
+  f.order.value = p?.order ?? products.length + 1;
+  f.active.checked = p ? !!p.active : true;
+  $("prodDlg").showModal();
+}
+$("addProductBtn").addEventListener("click", () => openProduct());
+$("prodCancel").addEventListener("click", () => $("prodDlg").close());
+
+$("prodForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const f = e.target;
+  const data = {
+    name: f.elements.name.value.trim(),
+    price: Number(f.price.value),
+    stock: Number(f.stock.value),
+    description: f.description.value.trim(),
+    imageUrl: f.imageUrl.value.trim(),
+    order: Number(f.order.value),
+    active: f.active.checked
+  };
+  if (data.name.length < 2) return toast("Nama produk minimal 2 karakter");
+  if (!(data.price >= 0) || !(data.stock >= 0)) return toast("Harga dan stok harus angka 0 atau lebih");
+  if (data.imageUrl && !/^https?:\/\//i.test(data.imageUrl)) return toast("URL gambar harus diawali https://");
+  $("prodSave").disabled = true;
+  try {
+    if (f.dataset.id) await updateDoc(doc(db, "products", f.dataset.id), data);
+    else await addDoc(collection(db, "products"), data);
+    $("prodDlg").close();
+    toast("Produk disimpan");
+  } catch (err) {
+    toast(errText(err));
+  } finally {
+    $("prodSave").disabled = false;
+  }
+});
+
+/* ===== BOOKING ===== */
+function renderBookings() {
+  const filter = $("bookFilter").value;
+  const list = bookings.filter((b) => !filter || b.status === filter);
+  $("bookCount").textContent = list.length + " booking";
+  if (!list.length) {
+    $("bookBody").innerHTML = `<tr><td colspan="6" class="empty">Tidak ada booking.</td></tr>`;
+    return;
+  }
+  $("bookBody").innerHTML = list.map((b) => {
+    const wa = waLink(b.phone, `Halo ${b.name}, kami dari 3 GARAGE terkait booking ${b.serviceType} Anda pada ${b.date}.`);
+    return `<tr>
+      <td>${esc(b.date)}</td>
+      <td><b>${esc(b.name)}</b><br><a href="${esc(wa)}" target="_blank" rel="noopener"><small>+${esc(b.phone)} · WhatsApp</small></a></td>
+      <td><b>${esc(b.vehicleType)}</b><br><small>${esc(b.serviceType)}</small></td>
+      <td><small>${esc(b.complaint || "-")}</small></td>
+      <td>
+        <select class="in" data-status="${esc(b.id)}" style="margin:0;min-width:130px">
+          ${STATUSES.map((s) => `<option ${s === b.status ? "selected" : ""}>${s}</option>`).join("")}
+        </select>
+      </td>
+      <td><button class="btn danger sm" data-bdel="${esc(b.id)}">${icon("trash")} Hapus</button></td>
+    </tr>`;
+  }).join("");
+}
+
+$("bookFilter").addEventListener("change", renderBookings);
+
+$("bookBody").addEventListener("change", async (e) => {
+  const s = e.target.closest("select[data-status]");
+  if (!s) return;
+  try {
+    // Aturan keamanan hanya mengizinkan perubahan field status
+    await updateDoc(doc(db, "bookings", s.dataset.status), { status: s.value });
+    toast("Status diperbarui");
+  } catch (err) { toast(errText(err)); }
+});
+
+$("bookBody").addEventListener("click", async (e) => {
+  const b = e.target.closest("button[data-bdel]");
+  if (!b) return;
+  if (!confirm("Hapus booking ini?")) return;
+  try { await deleteDoc(doc(db, "bookings", b.dataset.bdel)); toast("Booking dihapus"); }
+  catch (err) { toast(errText(err)); }
+});
+
+/* ===== VIDEO BENGKEL ===== */
+let videos = [];
+
+function renderVideos() {
+  $("vidCount").textContent = videos.length + " video";
+  if (!videos.length) {
+    $("vidBody").innerHTML = `<tr><td colspan="6" class="empty">Belum ada video. Klik "Tambah Video".</td></tr>`;
+    return;
+  }
+  $("vidBody").innerHTML = videos.map((v, i) => `
+    <tr>
+      <td>
+        <div class="acts">
+          <button class="btn ghost sm" data-vup="${i}" ${i === 0 ? "disabled" : ""}>↑</button>
+          <button class="btn ghost sm" data-vdown="${i}" ${i === videos.length - 1 ? "disabled" : ""}>↓</button>
+        </div>
+      </td>
+      <td><b>${esc(v.title)}</b><br><small>${esc((v.description || "").slice(0, 80))}</small></td>
+      <td>${v.type === "file" ? "Galeri (upload)" : "YouTube"}</td>
+      <td><small>${esc(v.type === "file" ? v.fileUrl : v.youtubeUrl)}</small></td>
+      <td>${v.active ? `<span class="pill">Aktif</span>` : `<span class="pill off">Nonaktif</span>`}</td>
+      <td>
+        <div class="acts">
+          <button class="btn ghost sm" data-vedit="${esc(v.id)}">${icon("edit")} Edit</button>
+          <button class="btn danger sm" data-vdel="${esc(v.id)}">${icon("trash")} Hapus</button>
+        </div>
+      </td>
+    </tr>`).join("");
+}
+
+function syncVidType() {
+  const t = $("vidForm").elements.vtype.value;
+  $("vidYt").hidden = t !== "youtube";
+  $("vidFile").hidden = t !== "file";
+}
+
+function openVideo(v = null) {
+  const f = $("vidForm"), E = f.elements;
+  f.reset();
+  f.dataset.id = v ? v.id : "";
+  $("vidTitle").textContent = v ? "Edit Video" : "Tambah Video";
+  E.vtitle.value = v?.title || "";
+  E.vdesc.value = v?.description || "";
+  E.vtype.value = v?.type || "youtube";
+  E.vyt.value = v?.youtubeUrl || "";
+  E.vfileUrl.value = v?.fileUrl || "";
+  E.vorder.value = v?.order ?? videos.length + 1;
+  E.vactive.checked = v ? !!v.active : true;
+  $("vidCurrent").textContent = v?.type === "file" && v.fileUrl ? "Video saat ini tersimpan. Pilih file baru hanya jika ingin menggantinya." : "";
+  $("vidStatus").textContent = "";
+  syncVidType();
+  $("vidDlg").showModal();
+}
+
+$("vidForm").elements.vtype.addEventListener("change", syncVidType);
+$("addVideoBtn").addEventListener("click", () => openVideo());
+$("vidCancel").addEventListener("click", () => $("vidDlg").close());
+$("vidMax").textContent = VIDEO_MAX_MB;
+
+// Upload video ke ImageKit lewat Cloudflare Worker (Worker memeriksa bahwa akun ini admin)
+async function uploadToImageKit(file) {
+  if (!auth.currentUser) throw new Error("Belum login.");
+  if (IMAGEKIT.uploadAuthUrl.includes("ISI_")) throw new Error("uploadAuthUrl ImageKit belum diisi di firebase-config.js.");
+
+  const idToken = await auth.currentUser.getIdToken();
+  const ar = await fetch(IMAGEKIT.uploadAuthUrl, {
+    method: "POST",
+    headers: { Authorization: "Bearer " + idToken }
+  });
+  if (!ar.ok) throw new Error(ar.status === 403 ? "Akun ini tidak punya izin upload." : "Gagal mendapat izin upload (" + ar.status + ").");
+  const { token, expire, signature } = await ar.json();
+
+  const fd = new FormData();
+  fd.append("file", file);
+  fd.append("fileName", `video-${Date.now()}-${file.name.replace(/[^\w.-]/g, "_")}`);
+  fd.append("publicKey", IMAGEKIT.publicKey);
+  fd.append("signature", signature);
+  fd.append("expire", String(expire));
+  fd.append("token", token);
+  fd.append("folder", IMAGEKIT.folder);
+  fd.append("useUniqueFileName", "true");
+
+  const ur = await fetch("https://upload.imagekit.io/api/v1/files/upload", { method: "POST", body: fd });
+  const j = await ur.json().catch(() => ({}));
+  if (!ur.ok || !j.url) throw new Error(j.message || "Upload ke ImageKit gagal.");
+  return j.url;
+}
+
+// Pesan dan loading ditampilkan DI DALAM dialog. Toast tersembunyi di balik dialog (top layer).
+function vidMsg(text, isErr = false) {
+  const m = $("vidStatus");
+  m.textContent = text;
+  m.style.color = isErr ? "#fca5a5" : "";
+}
+function setVidBusy(busy, label = "Simpan") {
+  const btn = $("vidSave");
+  btn.disabled = busy;
+  btn.innerHTML = busy ? `<span class="spin"></span>${label}` : label;
+  $("vidCancel").disabled = busy;
+}
+
+$("vidForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const f = e.target, E = f.elements;
+  vidMsg("");
+  const data = {
+    title: E.vtitle.value.trim(),
+    description: E.vdesc.value.trim(),
+    type: E.vtype.value,
+    youtubeUrl: "",
+    fileUrl: E.vfileUrl.value.trim(),
+    order: Number(E.vorder.value),
+    active: E.vactive.checked
+  };
+  if (data.title.length < 2) return vidMsg("Judul minimal 2 karakter", true);
+
+  if (data.type === "youtube") {
+    const raw = E.vyt.value.trim();
+    if (!ytId(raw)) return vidMsg("Link YouTube tidak valid", true);
+    data.youtubeUrl = raw;
+    data.fileUrl = "";
+  } else {
+    const file = E.vfile.files[0];
+    const pasted = E.vurl.value.trim();
+    if (pasted && !file) {
+      if (!/^https:\/\//i.test(pasted)) return vidMsg("URL video harus diawali https://", true);
+      data.fileUrl = pasted;
+    }
+    if (file) {
+      if (!file.type.startsWith("video/")) return vidMsg("File harus berupa video", true);
+      if (file.size > VIDEO_MAX_MB * 1024 * 1024) return vidMsg(`Ukuran video maksimal ${VIDEO_MAX_MB} MB`, true);
+      setVidBusy(true, "Mengunggah...");
+      vidMsg("Mengunggah video ke ImageKit, mohon tunggu...");
+      try {
+        data.fileUrl = await uploadToImageKit(file);
+      } catch (err) {
+        setVidBusy(false);
+        return vidMsg(err.message || "Upload gagal.", true);
+      }
+    }
+    if (!data.fileUrl) {
+      setVidBusy(false);
+      return vidMsg("Pilih file video atau tempel URL video", true);
+    }
+  }
+
+  setVidBusy(true, "Menyimpan...");
+  vidMsg("Menyimpan data video...");
+  try {
+    if (f.dataset.id) await updateDoc(doc(db, "videos", f.dataset.id), data);
+    else await addDoc(collection(db, "videos"), data);
+    setVidBusy(false);
+    $("vidDlg").close();
+    toast("Video disimpan");
+  } catch (err) {
+    console.error(err);
+    setVidBusy(false);
+    vidMsg("Gagal menyimpan: " + errText(err), true);
+  }
+});
+
+$("vidBody").addEventListener("click", async (e) => {
+  const b = e.target.closest("button");
+  if (!b || b.disabled) return;
+  if (b.dataset.vedit) return openVideo(videos.find((v) => v.id === b.dataset.vedit));
+  if (b.dataset.vdel) {
+    const v = videos.find((x) => x.id === b.dataset.vdel);
+    if (!confirm(`Hapus video "${v.title}"?`)) return;
+    try { await deleteDoc(doc(db, "videos", v.id)); toast("Video dihapus"); }
+    catch (err) { toast(errText(err)); }
+    return;
+  }
+  const isUp = b.dataset.vup !== undefined, isDown = b.dataset.vdown !== undefined;
+  if (isUp || isDown) {
+    const i = Number(isUp ? b.dataset.vup : b.dataset.vdown);
+    const j = isUp ? i - 1 : i + 1;
+    const a = videos[i], c = videos[j];
+    if (!a || !c) return;
+    const batch = writeBatch(db);
+    batch.update(doc(db, "videos", a.id), { order: c.order ?? j });
+    batch.update(doc(db, "videos", c.id), { order: a.order ?? i });
+    try { await batch.commit(); }
+    catch (err) { toast(errText(err)); }
+  }
+});
+
+/* ===== PENGATURAN WEBSITE ===== */
+const GROUPS = [
+  { title: "Hero (beranda)", fields: [
+    ["heroTitle", "Judul", "text"],
+    ["heroSubtitle", "Subjudul", "text"],
+    ["heroTagline", "Tagline", "text"],
+    ["heroSlogan", "Slogan", "text"],
+    ["heroBtnBooking", "Teks tombol booking", "text"],
+    ["heroBtnCatalog", "Teks tombol katalog", "text"],
+    ["heroBgUrl", "URL gambar latar hero", "url"]
+  ]},
+  { title: "Tentang Kami", fields: [
+    ["aboutTitle", "Judul", "text"],
+    ["aboutHighlight", "Kata highlight (merah)", "text"],
+    ["aboutDesc", "Deskripsi", "textarea"],
+    ["aboutBtn", "Teks tombol", "text"],
+    ["aboutImageUrl", "URL gambar (opsional)", "url"],
+    ["youtubeUrl", "URL video YouTube", "url"],
+    ["aboutPoints", "Poin keunggulan (satu per baris)", "lines"],
+    ["aboutFeatures", "Kartu fitur (satu per baris: ikon | judul)", "features", "Ikon: wrench, gear, shield, calendar, box, share, check, user"]
+  ]},
+  { title: "Produk & Booking", fields: [
+    ["productsTitle", "Judul bagian produk", "text"],
+    ["whatsappNumber", "Nomor WhatsApp bengkel", "text", "Format 628xxxxxxxxxx"],
+    ["bannerTitle", "Judul booking", "text"],
+    ["bannerDesc", "Deskripsi booking", "textarea"],
+    ["bannerUrl", "URL gambar booking", "url"]
+  ]},
+  { title: "Sosial Media", fields: [
+    ["socials.instagram.url", "Instagram - URL", "url"],
+    ["socials.instagram.label", "Instagram - username", "text"],
+    ["socials.instagram.show", "Tampilkan Instagram", "bool"],
+    ["socials.tiktok.url", "TikTok - URL", "url"],
+    ["socials.tiktok.label", "TikTok - username", "text"],
+    ["socials.tiktok.show", "Tampilkan TikTok", "bool"],
+    ["socials.youtube.url", "YouTube - URL channel", "url"],
+    ["socials.youtube.label", "YouTube - nama channel", "text"],
+    ["socials.youtube.show", "Tampilkan YouTube", "bool"],
+    ["socials.whatsapp.url", "WhatsApp - URL (kosongkan = pakai nomor bengkel)", "url"],
+    ["socials.whatsapp.label", "WhatsApp - label", "text"],
+    ["socials.whatsapp.show", "Tampilkan WhatsApp", "bool"]
+  ]},
+  { title: "Menu Navigasi", fields: [
+    ["nav", "Menu (satu per baris: Label | #target)", "nav", "Target: #beranda, #tentang, #produk, #booking, #sosial"]
+  ]},
+  { title: "Bagian yang ditampilkan", fields: [
+    ["sections.hero", "Beranda (hero)", "bool"],
+    ["sections.about", "Tentang Kami", "bool"],
+    ["sections.products", "Produk", "bool"],
+    ["sections.booking", "Booking", "bool"],
+    ["sections.social", "Sosial Media", "bool"]
+  ]},
+  { title: "Footer & tampilan", fields: [
+    ["logoUrl", "URL logo (opsional)", "url"],
+    ["accentColor", "Warna aksen", "color"],
+    ["footerContact", "Kontak di footer", "text"],
+    ["footerAddress", "Alamat di footer", "textarea"],
+    ["copyright", "Teks copyright", "text"]
+  ]},
+  { title: "Mode perawatan", fields: [
+    ["maintenance", "Aktifkan mode perawatan (pengunjung melihat pesan, admin tetap bisa masuk)", "bool"],
+    ["maintenanceMsg", "Pesan perawatan", "textarea"]
+  ]}
+];
+
+const fieldId = (path) => "f-" + path.replace(/\./g, "_");
+
+function renderSiteForm() {
+  // Jangan timpa form saat admin sedang mengetik di dalamnya
+  if ($("siteForm").contains(document.activeElement)) return;
+
+  const html = GROUPS.map((g) => `
+    <div class="card group">
+      <h3>${esc(g.title)}</h3>
+      <div class="grid2">
+        ${g.fields.map(([path, label, type, hint]) => {
+          const v = getPath(site, path);
+          const id = fieldId(path);
+          const full = ["textarea", "lines", "features", "nav"].includes(type) ? "full" : "";
+          if (type === "bool") {
+            return `<div class="field ${full}"><label class="chk"><input type="checkbox" id="${id}" data-path="${path}" data-type="bool" ${v ? "checked" : ""}> ${esc(label)}</label></div>`;
+          }
+          let input;
+          if (type === "textarea") input = `<textarea class="in" id="${id}" data-path="${path}" data-type="text">${esc(v)}</textarea>`;
+          else if (type === "lines") input = `<textarea class="in" id="${id}" data-path="${path}" data-type="lines">${esc((v || []).join("\n"))}</textarea>`;
+          else if (type === "features") input = `<textarea class="in" id="${id}" data-path="${path}" data-type="features">${esc((v || []).map((f) => `${f.icon} | ${f.title}`).join("\n"))}</textarea>`;
+          else if (type === "nav") input = `<textarea class="in" id="${id}" data-path="${path}" data-type="nav">${esc((v || []).map((n) => `${n.label} | ${n.target}`).join("\n"))}</textarea>`;
+          else if (type === "color") input = `<input class="in" type="color" id="${id}" data-path="${path}" data-type="text" value="${esc(v || "#e10600")}" style="height:44px;padding:4px">`;
+          else input = `<input class="in" type="${type === "url" ? "text" : "text"}" id="${id}" data-path="${path}" data-type="text" value="${esc(v)}">`;
+          return `<div class="field ${full}"><label for="${id}">${esc(label)}</label>${input}${hint ? `<div class="hint">${esc(hint)}</div>` : ""}</div>`;
+        }).join("")}
+      </div>
+    </div>`).join("");
+
+  $("siteForm").innerHTML = html + `
+    <div class="savebar">
+      <button class="btn" type="submit" id="siteSave">Simpan Semua Perubahan</button>
+      <span class="note">Perubahan langsung tampil di website.</span>
+    </div>`;
+}
+
+$("siteForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const patch = {};
+  try {
+    for (const el of e.target.querySelectorAll("[data-path]")) {
+      const path = el.dataset.path;
+      const t = el.dataset.type;
+      let value;
+      if (t === "bool") value = el.checked;
+      else if (t === "lines") value = el.value.split("\n").map((s) => s.trim()).filter(Boolean);
+      else if (t === "features") {
+        value = el.value.split("\n").map((s) => s.trim()).filter(Boolean).map((line) => {
+          const [ic, ...rest] = line.split("|");
+          return { icon: (ic || "").trim() || "check", title: rest.join("|").trim() };
+        });
+      } else if (t === "nav") {
+        value = el.value.split("\n").map((s) => s.trim()).filter(Boolean).map((line) => {
+          const [label, ...rest] = line.split("|");
+          return { label: (label || "").trim(), target: rest.join("|").trim() || "#beranda", show: true };
+        });
+      } else value = el.value.trim();
+
+      if (path === "whatsappNumber" && value) value = normalizePhone(value);
+      setPath(patch, path, value);
+    }
+    if (!patch.nav?.length) patch.nav = DEFAULT_SITE.nav;
+    if (!patch.aboutPoints) patch.aboutPoints = [];
+  } catch (err) {
+    return toast("Gagal membaca form: " + err.message);
+  }
+
+  $("siteSave").disabled = true;
+  try {
+    // merge: hanya field di form yang ditulis; data lain tetap aman
+    await setDoc(SITE_REF, patch, { merge: true });
+    toast("Pengaturan website disimpan");
+  } catch (err) {
+    toast(errText(err));
+  } finally {
+    $("siteSave").disabled = false;
+  }
+});
+
+// Isi awal form sebelum listener Firestore selesai
+renderSiteForm();
+</script>
+</body>
+</html>
